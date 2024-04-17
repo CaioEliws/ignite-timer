@@ -1,20 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { HandPalm, Play } from 'phosphor-react'
 import { differenceInSeconds } from 'date-fns'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import * as zod from 'zod'
 
+import { NewCycleForm } from './components/NewCycleForm'
+
 import {
-  CountdownContainer,
-  FormContainer,
   HomeContainer,
-  MinutesAmountInput,
-  Separator,
   StartCountdownButton,
-  TaskInput,
   StopCountdownButton,
 } from './styles.'
+import { CountDown } from './components/CountDown'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
@@ -142,45 +140,9 @@ export function Home() {
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)}>
-        <FormContainer>
-          <label htmlFor="task">Vou trabalhar em</label>
-          <TaskInput
-            id="task"
-            list="task-suggestions"
-            placeholder="Dê um nome para o seu projeto"
-            disabled={!!activeCycle}
-            {...register('task')}
-          />
+        <NewCycleForm />
 
-          <datalist id="task-suggestions">
-            <option value="Projeto 1" />
-            <option value="Projeto 2" />
-            <option value="Projeto 3" />
-            <option value="Cuz cuz" />
-          </datalist>
-
-          <label htmlFor="minutesAmount">durante</label>
-          <MinutesAmountInput
-            type="number"
-            id="minutesAmount"
-            placeholder="00"
-            step={5}
-            min={1}
-            max={60}
-            disabled={!!activeCycle}
-            {...register('minutesAmount', { valueAsNumber: true })}
-          />
-
-          <span>minutos.</span>
-        </FormContainer>
-
-        <CountdownContainer>
-          <span>{minutes[0]}</span>
-          <span>{minutes[1]}</span>
-          <Separator>:</Separator>
-          <span>{seconds[0]}</span>
-          <span>{seconds[1]}</span>
-        </CountdownContainer>
+        <CountDown />
 
         {activeCycle ? (
           <StopCountdownButton onClick={handleInterruptCycle} type="button">
@@ -197,115 +159,3 @@ export function Home() {
     </HomeContainer>
   )
 }
-
-// form uncontrolled
-// export function Home() {
-//   function handleSubmit(event) {
-//     event.target.task.value
-//   }
-
-//   return (
-//     <HomeContainer>
-//       <form onSubmit={handleSubmit}>
-//         <FormContainer>
-//           <label htmlFor="task">Vou trabalhar em</label>
-//           <TaskInput
-//             id="task"
-//             name="task1"
-//             list="task-suggestions"
-//             placeholder="Dê um nome para o seu projeto"
-//           />
-
-//           <datalist id="task-suggestions">
-//             <option value="Projeto 1" />
-//             <option value="Projeto 2" />
-//             <option value="Projeto 3" />
-//             <option value="Cuz cuz" />
-//           </datalist>
-
-//           <label htmlFor="minutesAmount">durante</label>
-//           <MinutesAmountInput
-//             type="number"
-//             id="minutesAmount"
-//             placeholder="00"
-//             step={5}
-//             min={5}
-//             max={60}
-//           />
-
-//           <span>minutos.</span>
-//         </FormContainer>
-
-//         <CountdownContainer>
-//           <span>0</span>
-//           <span>0</span>
-//           <Separator>:</Separator>
-//           <span>0</span>
-//           <span>0</span>
-//         </CountdownContainer>
-
-//         <StartCountdownButton disabled={!task} type="submit">
-//           <Play size={24} />
-//           Começar
-//         </StartCountdownButton>
-//       </form>
-//     </HomeContainer>
-//   )
-// }
-
-/* 
-form controlled
-export function Home() {
-  const [task, setTask] = useState('')
-
-  return (
-    <HomeContainer>
-      <form>
-        <FormContainer>
-          <label htmlFor="task">Vou trabalhar em</label>
-          <TaskInput
-            id="task"
-            list="task-suggestions"
-            placeholder="Dê um nome para o seu projeto"
-            onChange={(e) => setTask(e.target.value)}
-            value={task}
-          />
-
-          <datalist id="task-suggestions">
-            <option value="Projeto 1" />
-            <option value="Projeto 2" />
-            <option value="Projeto 3" />
-            <option value="Cuz cuz" />
-          </datalist>
-
-          <label htmlFor="minutesAmount">durante</label>
-          <MinutesAmountInput
-            type="number"
-            id="minutesAmount"
-            placeholder="00"
-            step={5}
-            min={5}
-            max={60}
-          />
-
-          <span>minutos.</span>
-        </FormContainer>
-
-        <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
-          <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
-        </CountdownContainer>
-
-        <StartCountdownButton disabled={!task} type="submit">
-          <Play size={24} />
-          Começar
-        </StartCountdownButton>
-      </form>
-    </HomeContainer>
-  )
-}
-
-*/
